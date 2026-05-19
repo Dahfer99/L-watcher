@@ -12,7 +12,7 @@
 
 
 
-int fd, wd[12],wd_count, i = 0;
+int fd, wd[12],wd_count;
 
 void cleanup(int sig){
 	for(int i=0; i<wd_count; i++){
@@ -25,6 +25,7 @@ void cleanup(int sig){
 
 int main(int argc, char **argv)
 {
+	int i=0;
 	FILE *conf;
 	char buffer[EVENT_BUF_LEN];
 	char path[512];
