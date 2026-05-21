@@ -1,49 +1,51 @@
 #include <stdio.h>
-#include <signal.h> //Gère les signals
+#include <signal.h>
 #include <stdlib.h>
-#include <unistd.h> // gère les I/O system call
-#include <string.h> // gère le chaîne de caractère
-#include <errno.h> // gère les erreur
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
 #include <limits.h>
-#include <dirent.h> // gère les répértoires
+#include <dirent.h>
 #include <sys/inotify.h>
 #include <sys/stat.h>
 
+// Constant
 #define EVENT_SIZE sizeof(struct inotify_event)
 #define EVENT_BUF_LEN (10 * (EVENT_SIZE + NAME_MAX + 1))
 
+// Function prototype
 void watch_recursive(const char *path);
 void cleanup(int sig);
 
-int fd, wd[32],wd_count;
+// Global var
+int fd; 
+int wd[32];
+int wd_count;
+char wd_path[32][512];
 
+// function
 void watch_recursive(const char *path){
 
+	
 	wd[wd_count] = inotify_add_watch(fd, path, IN_ALL_EVENTS);
 	if (wd[wd_count] < 0) { perror(path); return; }
+	snprintf(wd_path[wd_count], 512, "%s", path);
 	wd_count++;
-
+	
 	DIR * dirp = opendir(path);
 	char full_path[512];
 	if (dirp == NULL){
 		perror("dirp");
 		return;
 	}
-
+	
 	struct dirent *entry;
 	while ((entry=readdir(dirp)) != NULL){
 		if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
 		if ((entry->d_type) == DT_DIR){
 			snprintf(full_path, sizeof(full_path), "%s/%s", path, entry->d_name);
 			watch_recursive(full_path);
-			/* wd[wd_count]= inotify_add_watch(fd, full_path, IN_ALL_EVENTS);
-			if (wd[wd_count] < 0) {
-				perror("inotify_add_watch - recursive");
-				return;
-			}
-			wd_count++; */
 		}
-
 	}
 }
 
@@ -56,6 +58,7 @@ void cleanup(int sig){
 	exit(0);
 }
 
+// Main
 int main(int argc, char **argv)
 {
 	int i=0;
@@ -65,8 +68,8 @@ int main(int argc, char **argv)
 	
 	signal(SIGINT, cleanup);   // Ctrl+C
 	signal(SIGTERM, cleanup);  // kill command
-		
-	// Initialisation de inotify --- Initialize inotify
+	
+	
 	fd = inotify_init();
 	if (fd < 0)
 	{
@@ -75,7 +78,6 @@ int main(int argc, char **argv)
 	}
 	
 	conf = fopen("./config/inotify.config", "r");
-	// Verifier si le fichier existe --- check if file exist
 	if (conf == NULL)
 	{
 		perror("config file");
@@ -88,16 +90,6 @@ int main(int argc, char **argv)
 		if (path[0] == '#' || path[0] == '\0'){continue;}
 		path[strcspn(path, "\n")] = '\0';
 		watch_recursive(path); 
-		/*wd[i] = inotify_add_watch(fd, path, IN_ALL_EVENTS);
-		if (wd[i] < 0)
-		{
-			perror("inotify_add_watch");
-			printf("Check error in the inotify.conf file to fix the problem\n");
-			close(fd);
-			exit(1);
-		}
-		i++;
-		wd_count++; */
 	}
 	
 	while (1)
@@ -107,10 +99,22 @@ int main(int argc, char **argv)
 		while (ptr < buffer + length)
 		{
 			struct inotify_event *event = (struct inotify_event *)ptr;
+			int index = -1;
+			for (i=0; i<wd_count; i++){
+				if (wd[i] == event->wd){
+					index = i;
+					break;
+				}
+			}
 			if (event->mask & IN_ISDIR)
 			{
-				if (event->mask & IN_CREATE){printf("CREATED:DIRECTORY:%s\n", event->name);}
-				if (event->mask & IN_DELETE){printf("DELETED:DIRECTORY:%s\n", event->name);}
+				if (event->mask & IN_CREATE){
+					char full_path[512];
+					printf("CREATED:DIRECTORY:%s:%s\n",wd_path[index], event->name);
+					snprintf(full_path, sizeof(full_path), "%s/%s", wd_path[index], event->name);
+					watch_recursive(full_path);
+				}
+				if (event->mask & IN_DELETE){printf("DELETED:DIRECTORY:%s/:%s\n",wd_path[index], event->name);}
 				// if ( event->mask & IN_MODIFY ) { printf("%s modified\n", event->name);}
 				// if ( event->mask & IN_OPEN ) { printf("%s opened\n", event->name);}
 				// if ( event->mask & IN_MOVE ) { printf("%s moved\n", event->name);}
@@ -122,14 +126,14 @@ int main(int argc, char **argv)
 			else
 
 			{
-				if (event->mask & IN_CREATE){printf("CREATED:FILE:%s\n", event->name);}
-				if (event->mask & IN_DELETE){printf("DELETED:FILE:%s\n", event->name);}
-				if (event->mask & IN_MODIFY){printf("MODIFIED:FILE:%s\n", event->name);}
+				if (event->mask & IN_CREATE){printf("CREATED:FILE:%s/:%s\n",wd_path[index], event->name);}
+				if (event->mask & IN_DELETE){printf("DELETED:FILE:%s/:%s\n",wd_path[index], event->name);}
+				if (event->mask & IN_MODIFY){printf("MODIFIED:FILE:%s/:%s\n",wd_path[index], event->name);}
 				// if ( event->mask & IN_OPEN ) { printf("%s opened\n", event->name);}
-				// if ( event->mask & IN_MOVE ) { printf("%s moved\n", event->name);}
+				if ( event->mask & IN_MOVE ) { printf("MOVED:FILE:%s/:%s\n",wd_path[index], event->name);}
 				// if ( event->mask & IN_CLOSE ) { printf("%s closed\n", event->name);}
 				// if ( event->mask & IN_ACCESS ) { printf("%s accessed\n", event->name);}
-				// if ( event->mask & IN_ATTRIB ) { printf("%s metadata changed\n", event->name);}
+				if ( event->mask & IN_ATTRIB ) { printf("CHANGEDMETADATA:FILE:%s/:%s\n",wd_path[index], event->name);}
 			}
 
 			ptr += EVENT_SIZE + event->len;
