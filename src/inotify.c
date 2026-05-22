@@ -1,13 +1,15 @@
-#include <stdio.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <limits.h>
+
+#include <signal.h>
 #include <dirent.h>
-#include <sys/inotify.h>
 #include <sys/stat.h>
+
+#include <unistd.h>
+#include <sys/inotify.h>
 
 // Constant
 #define EVENT_SIZE sizeof(struct inotify_event)
@@ -99,6 +101,7 @@ int main(int argc, char **argv)
 		while (ptr < buffer + length)
 		{
 			struct inotify_event *event = (struct inotify_event *)ptr;
+			
 			int index = -1;
 			for (i=0; i<wd_count; i++){
 				if (wd[i] == event->wd){
@@ -106,34 +109,46 @@ int main(int argc, char **argv)
 					break;
 				}
 			}
+			
+
 			if (event->mask & IN_ISDIR)
 			{
 				if (event->mask & IN_CREATE){
 					char full_path[512];
 					printf("CREATED:DIRECTORY:%s:%s\n",wd_path[index], event->name);
+					fflush(stdout);
 					snprintf(full_path, sizeof(full_path), "%s/%s", wd_path[index], event->name);
 					watch_recursive(full_path);
 				}
-				if (event->mask & IN_DELETE){printf("DELETED:DIRECTORY:%s/:%s\n",wd_path[index], event->name);}
+				if (event->mask & IN_DELETE){printf("DELETED:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MOVE){printf("MOVED:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_ATTRIB ){
+					if (!(event->mask & IN_CREATE)){
+					printf("ATTRIB:DIRECTORY:%s/:%s\n",wd_path[index], event->name);fflush(stdout);
+					}
+				}
+				//if (event->mask & IN_ACCESS ) {printf("%s accessed\n", event->name);}
 				// if ( event->mask & IN_MODIFY ) { printf("%s modified\n", event->name);}
 				// if ( event->mask & IN_OPEN ) { printf("%s opened\n", event->name);}
 				// if ( event->mask & IN_MOVE ) { printf("%s moved\n", event->name);}
 				// if ( event->mask & IN_CLOSE ) { printf("%s closed\n", event->name);}
-				// if ( event->mask & IN_ACCESS ) { printf("%s accessed\n", event->name);}
-				// if ( event->mask & IN_ATTRIB ) { printf("%s metadata changed\n", event->name);}
 			}
 
 			else
 
 			{
-				if (event->mask & IN_CREATE){printf("CREATED:FILE:%s/:%s\n",wd_path[index], event->name);}
-				if (event->mask & IN_DELETE){printf("DELETED:FILE:%s/:%s\n",wd_path[index], event->name);}
-				if (event->mask & IN_MODIFY){printf("MODIFIED:FILE:%s/:%s\n",wd_path[index], event->name);}
-				// if ( event->mask & IN_OPEN ) { printf("%s opened\n", event->name);}
-				if ( event->mask & IN_MOVE ) { printf("MOVED:FILE:%s/:%s\n",wd_path[index], event->name);}
+				if (event->mask & IN_CREATE){printf("CREATED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_DELETE){printf("DELETED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MODIFY){printf("MODIFIED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MOVE){printf("MOVED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_ATTRIB){
+					if (!(event->mask & IN_CREATE)){
+						printf("ATTRIB:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);
+					}
+				}
 				// if ( event->mask & IN_CLOSE ) { printf("%s closed\n", event->name);}
 				// if ( event->mask & IN_ACCESS ) { printf("%s accessed\n", event->name);}
-				if ( event->mask & IN_ATTRIB ) { printf("CHANGEDMETADATA:FILE:%s/:%s\n",wd_path[index], event->name);}
+				// if ( event->mask & IN_OPEN ) { printf("%s opened\n", event->name);}
 			}
 
 			ptr += EVENT_SIZE + event->len;
