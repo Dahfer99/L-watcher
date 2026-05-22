@@ -1,6 +1,8 @@
 #!/bin/bash
 
-trap "./scripts/cleanup.sh" EXIT
+session_time=$(date +%Y%m%d_%H%M)
 
-./scripts/backup.sh
+trap "./scripts/cleanup.sh $session_time" EXIT
+
+./scripts/backup.sh $session_time
 ./bin/inotify | ./scripts/output.sh

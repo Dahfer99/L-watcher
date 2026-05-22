@@ -1,7 +1,7 @@
 #!/bin/bash
 
 config_path="./config/inotify.config"
-time_stamp=$(date +%Y%m%d_%H%M)
+time_stamp=$1
 backup_dir="./backup/$time_stamp"
 
 if [ ! -d "$backup_dir" ];then

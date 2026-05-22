@@ -1,0 +1,5 @@
+[Fri 22 May 13:44:44]     MODIFIED        FILE            /home/unnamed/Public/               passwd         
+[Fri 22 May 13:45:09]     MODIFIED        FILE            /home/unnamed/Public/               shadow         
+[Fri 22 May 13:45:39]     MODIFIED        FILE            /home/unnamed/Public/               group          
+[Fri 22 May 13:45:57]     CREATED         FILE            /home/unnamed/Public/               gshadow        
+[Fri 22 May 13:45:57]     MODIFIED        FILE            /home/unnamed/Public/               gshadow        

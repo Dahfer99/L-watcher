@@ -11,6 +11,6 @@ if [ ! -f "$log_file" ];then
     exit 0
 fi 
 
-mv "$log_file" "./logs/session_$(date +%Y%m%d)_$(date +%H%M).log"
+mv "$log_file" "./logs/session_$1.log"
 find "$log_dir" -name "session_*.log" -mtime "+$max_days" -delete
 find "$backup_dir" -name "*.tar.gz" -mtime "+$max_days" -delete
