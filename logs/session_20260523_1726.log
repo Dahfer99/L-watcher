@@ -1,0 +1,9 @@
+[Sat 23 May 17:26:46]     ATTRIB          DIRECTORY       /home/unnamed/Public/               jkj             P=755           O=unnamed       G=unnamed      
+[Sat 23 May 17:26:46]     ATTRIB          DIRECTORY       /home/unnamed/Public/jkj/           jkj             P=755           O=unnamed       G=unnamed      
+[Sat 23 May 17:26:54]     ATTRIB          DIRECTORY       /home/unnamed/Public/               jkj             P=755           O=unnamed       G=unnamed      
+[Sat 23 May 17:26:54]     ATTRIB          DIRECTORY       /home/unnamed/Public/jkj/           jkj             P=755           O=unnamed       G=UNIX         
+[Sat 23 May 17:27:46]     ATTRIB          DIRECTORY       /home/unnamed/Public/               jkj             P=755           O=unnamed       G=unnamed      
+[Sat 23 May 17:27:46]     ATTRIB          DIRECTORY       /home/unnamed/Public/jkj/           jkj             P=755           O=test          G=UNIX         
+[Sat 23 May 17:28:50]     ATTRIB          FILE            /home/unnamed/Public/               passwd          P=640           O=unnamed -> test G=unnamed      
+[Sat 23 May 17:29:17]     ATTRIB          DIRECTORY       /home/unnamed/Public/               jkj             P=755           O=unnamed       G=unnamed      
+[Sat 23 May 17:29:17]     ATTRIB          DIRECTORY       /home/unnamed/Public/jkj/           jkj             P=755           O=test          G=UNIX         

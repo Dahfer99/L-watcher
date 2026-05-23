@@ -124,8 +124,10 @@ int main(int argc, char **argv)
 				if (event->mask & IN_MOVE){printf("MOVED:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
 				if (event->mask & IN_ATTRIB ){
 					if (!(event->mask & IN_CREATE)){
-					printf("ATTRIB:DIRECTORY:%s/:%s\n",wd_path[index], event->name);fflush(stdout);
+						printf("ATTRIB:DIRECTORY:%s/:%s\n",wd_path[index], event->name);
+						fflush(stdout);
 					}
+
 				}
 				//if (event->mask & IN_ACCESS ) {printf("%s accessed\n", event->name);}
 				// if ( event->mask & IN_MODIFY ) { printf("%s modified\n", event->name);}
