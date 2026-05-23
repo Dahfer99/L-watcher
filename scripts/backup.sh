@@ -6,7 +6,7 @@ backup_dir="./backup/$time_stamp"
 
 if [ ! -d "$backup_dir" ];then
     mkdir -p "$backup_dir"
-    ls "$backup_dir"
+    # ls "$backup_dir"
 fi
 
 while IFS= read -r line;do
@@ -23,4 +23,3 @@ while IFS= read -r line;do
 done < "$config_path"
 
 tar -czf "./backup/$time_stamp.tar.gz" -C "./backup" "$time_stamp"
-rm -rf "$backup_dir"
