@@ -16,6 +16,7 @@ if [ ! -d "$log_dir" ]; then
 fi
 
 touch $log_file
+last_created=""
 
 printf "${RED}%-25s %-15s %-15s %-30s %-15s %-15s %-15s %-15s${RESET}\n" "TIME" "EVENT" "TYPE" "PATH" "NAME" "PERMS" "OWNER" "GROUP"
 
@@ -40,7 +41,13 @@ while IFS=: read event type path name; do
     owner=$(stat -c "%U" "$target")
     group=$(stat -c "%G" "$target")
 
-    if [[ "$event" == "MODIFIED" ]]; then
+    if [[ "$event" == "CREATED" ]]; then
+
+        last_created=$name
+        printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group"
+        printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" >> "$log_file"
+
+    elif [[ "$event" == "MODIFIED" ]]; then
 
         dir_prefix="${clean_path//\//_}"
         diff_dir="./logs/diffs"
@@ -65,38 +72,13 @@ while IFS=: read event type path name; do
             printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" >>"$log_file"
         fi
 
-    #  elif [[ "$event" == "ATTRIB" ]]; then 
-    #     if [ -f "$backup_file" ] || [ -d "$backup_file" ]; then
-    #         old_perms=$(stat -c "%a" "$backup_file")
-    #         old_owner=$(stat -c "%U" "$backup_file")
-    #         old_group=$(stat -c "%G" "$backup_file")
-
-    #         if [[ "$old_perms" != "$new_perms" ]]; then
-    #             perms_out="${old_perms} -> ${new_perms}"
-    #         else
-    #             perms_out=$new_perms
-    #         fi
-    #         if [[ "$old_owner" != "$new_owner" ]]; then
-    #             owner_out="${old_owner} -> ${new_owner}"
-    #         else
-    #             owner_out=$new_owner
-    #         fi
-    #         if [[ "$old_group" != "$new_group" ]]; then
-    #             group_out="${old_group} -> ${new_group}"
-    #         else
-    #             group_out=$new_group
-    #         fi
-
-    #     else
-
-    #         perms_out=$new_perms
-    #         owner_out=$new_owner
-    #         group_out=$new_group
-
-    #     fi
-
-    #     printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "P=$perms_out" "O=$owner_out" "G=$group_out"
-    #     printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "P=$perms_out" "O=$owner_out" "G=$group_out" >>"$log_file"
+     elif [[ "$event" == "ATTRIB" ]]; then 
+        if [ "$name" == "$last_created" ]; then
+            last_created=""
+        else 
+            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group"
+            printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" >> "$log_file"
+        fi 
 
     else
 
