@@ -18,7 +18,7 @@ fi
 touch $log_file
 last_created=""
 
-printf "${RED}%-25s %-15s %-15s %-30s %-15s %-15s %-15s %-15s${RESET}\n" "TIME" "EVENT" "TYPE" "PATH" "NAME" "PERMS" "OWNER" "GROUP"
+printf "${RED}%-25s %-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s${RESET}\n" "TIME" "EVENT" "TYPE" "PATH" "NAME" "PERMS" "OWNER" "GROUP" "ACTOR"
 
 while IFS=: read event type path name; do
     time=$(date "+[%a %d %b %H:%M:%S]")
@@ -34,18 +34,22 @@ while IFS=: read event type path name; do
         backup_file="./backup/$1/$dir_basename" # Actually it's directory but i'm too lazy to change the var's name
 
     else
-        target="$path/$name"
+        target="$path$name"
     fi
 
-    perms=$(stat -c "%a" "$target")
-    owner=$(stat -c "%U" "$target")
-    group=$(stat -c "%G" "$target")
+    
+    if [[ "$event" != "DELETED" ]];then
+        user=$(./scripts/trace.sh "$target")
+        perms=$(stat -c "%a" "$target")
+        owner=$(stat -c "%U" "$target")
+        group=$(stat -c "%G" "$target")
+    fi 
 
     if [[ "$event" == "CREATED" ]]; then
 
         last_created=$name
-        printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group"
-        printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" >> "$log_file"
+        printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user"
+        printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" >> "$log_file"
 
     elif [[ "$event" == "MODIFIED" ]]; then
 
@@ -62,28 +66,29 @@ while IFS=: read event type path name; do
             diff_output=$(diff "$backup_file" "/${clean_path}/${name}")
             changed=$(echo "$diff_output" | grep -c "^[<>]")
 
-            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-25s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "[ ${changed} lines changed -> $path$name ]"
-            printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-25s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "[${changed} lines changed -> $path$name]" >>"$log_file"
-            printf "%-25s %-35s %-15s\n %s\n\n" "$time" "$path" "$name" "$diff_output" >>"$diff_file"
+            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s %-35s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" "[ ${changed} lines changed -> $path$name ]"
+            printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s %-35s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" "[${changed} lines changed -> $path$name]" >>"$log_file"
+            printf "%-25s %-35s %-15s %-15s\n %s\n\n" "$time" "$path" "$name" "$user" "$diff_output" >> "$diff_file"
 
         else
 
-            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-25s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "[No backup found]"
-            printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" >>"$log_file"
+            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-25s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "[No backup found]" "$user"
+            printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" >>"$log_file"
         fi
 
      elif [[ "$event" == "ATTRIB" ]]; then 
         if [ "$name" == "$last_created" ]; then
             last_created=""
         else 
-            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group"
-            printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" >> "$log_file"
+            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user"
+            printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" >> "$log_file"
         fi 
 
     else
 
-        printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group"
-        printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" >> "$log_file"
+        printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user"
+        printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" >> "$log_file"
 
     fi
+
 done
