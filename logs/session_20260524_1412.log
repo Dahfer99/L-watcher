@@ -1,5 +1,0 @@
-[Sun 24 May 14:12:55]     ATTRIB          DIRECTORY       /home/unnamed/Public/               new             755             unnamed         unnamed         unknown        
-[Sun 24 May 14:12:59]     ATTRIB          DIRECTORY       /home/unnamed/Public/new/           new             755             unnamed         unnamed         unknown        
-[Sun 24 May 14:13:25]     DELETED         DIRECTORY       /home/unnamed/Public/               new             755             unnamed         unnamed         unknown        
-[Sun 24 May 14:13:44]     CREATED         FILE            /home/unnamed/Public/               cab             644             unnamed         unnamed         unknown        
-[Sun 24 May 14:15:22]     CREATED         FILE            /home/unnamed/Public/               yay             644             unnamed         unnamed         unknown        

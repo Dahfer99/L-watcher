@@ -1,6 +1,6 @@
 #!/bin/bash
 
-max_days=7
+max_days=${2:-7}
 
 log_file="./logs/session.log"
 log_dir="./logs"
@@ -13,7 +13,8 @@ if [ ! -f "$log_file" ];then
     exit 0
 fi 
 
-mv "$log_file" "./logs/session_$1.log"
+#auditctl -D -k lwatcher 2>/dev/null
+mv "$log_file" "./logs/session_$(date +%Y%m%d)_$(date +%H%M).log"
 find "$log_dir" -name "session_*.log" -mtime "+$max_days" -delete
 find "$backup_dir" -name "*.tar.gz" -mtime "+$max_days" -delete
 find "$diff_dir" -name "*.diff" -mtime "+$max_days" -delete

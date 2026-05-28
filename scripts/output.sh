@@ -36,10 +36,12 @@ while IFS=: read event type path name; do
     else
         target="$path$name"
     fi
+    user=$(./scripts/trace.sh "$target")
+    #echo "DEBUG output: $(whoami)" >&2
 
     
     if [[ "$event" != "DELETED" ]];then
-        user=$(./scripts/trace.sh "$target")
+
         perms=$(stat -c "%a" "$target")
         owner=$(stat -c "%U" "$target")
         group=$(stat -c "%G" "$target")
@@ -72,11 +74,11 @@ while IFS=: read event type path name; do
 
         else
 
-            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-25s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "[No backup found]" "$user"
+            printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-25s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" "[No backup found]" 
             printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" >>"$log_file"
         fi
 
-     elif [[ "$event" == "ATTRIB" ]]; then 
+    elif [[ "$event" == "ATTRIB" ]]; then 
         if [ "$name" == "$last_created" ]; then
             last_created=""
         else 

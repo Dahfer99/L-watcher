@@ -1,6 +1,35 @@
 #!/bin/bash
 
-target="$1" 
+target="$1"
+
+# AUSEARCH FAIL
+# DEBUG — remove after fixing
+# echo "DEBUG: target=$target" >&2
+# raw=$() 
+# echo "DEBUG: raw=$(echo $raw)" >&2
+# echo "DEBUG: raw lines=$(echo $raw | wc -l)" >&2
+# echo "DEBUG: after grep auid=$(echo $raw | grep auid= | grep -v 'tty=(none)')">&2
+# echo "DEBUG trace: $(whoami)" >&2
+# echo "DEBUG: ausearch result:" >&2
+# sudo ausearch -k lwatcher -ts recent 2>&1 | tail -20 >&2
+# auid=$(sudo ausearch -k lwatcher -ts recent 2>/dev/null \
+#     | grep "auid=" \
+#     | grep "tty=pts" \
+#     | tail -1 \
+#     | grep -oP 'auid=\K[0-9]+')
+
+# if [[ -z "$auid" ]] || [[ "$auid" == "4294967295" ]]; then
+#     echo "unknown"
+#     exit 0
+# fi
+
+# username=$(getent passwd "$auid" | cut -d: -f1)
+# if [[ -z "$username" ]];then 
+#     echo "uid:$auid"
+# else 
+#     echo "$username"
+# fi
+# Dead code --- ignore
 
 if command -v lsof &>/dev/null; then 
     user=$(lsof $target 2>/dev/null | awk 'NR==2{printf $3}')

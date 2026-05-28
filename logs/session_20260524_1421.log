@@ -1,7 +1,0 @@
-[Sun 24 May 14:22:00]     CREATED         FILE            /home/unnamed/Public/               4913                                                            unknown        
-[Sun 24 May 14:22:07]     DELETED         FILE            /home/unnamed/Public/               4913                                                            unknown        
-[Sun 24 May 14:22:07]     MOVED           FILE            /home/unnamed/Public/               cab             644             unnamed         unnamed         unknown        
-[Sun 24 May 14:22:11]     CREATED         FILE            /home/unnamed/Public/               cab             644             unnamed         unnamed         unknown        
-[Sun 24 May 14:22:14]     MODIFIED        FILE            /home/unnamed/Public/               cab             644             unnamed         unnamed         unknown         [1 lines changed -> /home/unnamed/Public/cab]
-[Sun 24 May 14:22:18]     MODIFIED        FILE            /home/unnamed/Public/               cab             644             unnamed         unnamed         unknown         [1 lines changed -> /home/unnamed/Public/cab]
-[Sun 24 May 14:22:25]     ATTRIB          FILE            /home/unnamed/Public/               cab             644             unnamed         unnamed         unknown        

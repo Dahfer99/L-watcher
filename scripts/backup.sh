@@ -18,6 +18,7 @@ while IFS= read -r line;do
         continue
     fi 
     cp -r "$line" "$backup_dir/"
+    auditctl -w "$line" -p rwxa -k lwatcher
 
     echo $line
 done < "$config_path"
