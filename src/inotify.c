@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <sys/inotify.h>
 
+#include "trace.h"
+
 // Constant
 #define EVENT_SIZE sizeof(struct inotify_event)
 #define EVENT_BUF_LEN (10 * (EVENT_SIZE + NAME_MAX + 1))
@@ -91,17 +93,18 @@ int main(int argc, char **argv)
 	{
 		if (path[0] == '#' || path[0] == '\0'){continue;}
 		path[strcspn(path, "\n")] = '\0';
-		watch_recursive(path); 
+		watch_recursive(path);
 	}
-	
+
 	while (1)
 	{
 		char *ptr = buffer;
 		int length = read(fd, buffer, EVENT_BUF_LEN);
 		while (ptr < buffer + length)
 		{
+			char actor[64];
 			struct inotify_event *event = (struct inotify_event *)ptr;
-			
+
 			int index = -1;
 			for (i=0; i<wd_count; i++){
 				if (wd[i] == event->wd){
@@ -109,7 +112,7 @@ int main(int argc, char **argv)
 					break;
 				}
 			}
-			
+
 
 			if (event->mask & IN_ISDIR)
 			{
@@ -123,8 +126,11 @@ int main(int argc, char **argv)
 				if (event->mask & IN_DELETE){printf("DELETED:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
 				if (event->mask & IN_MOVE){printf("MOVED:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
 				if (event->mask & IN_ATTRIB ){
+					char full_path[512];
+					snprintf(full_path, sizeof(full_path), "%s/%s", wd_path[index], event->name);
+					trace(full_path, actor, sizeof(actor));
 					if (!(event->mask & IN_CREATE)){
-						printf("ATTRIB:DIRECTORY:%s/:%s\n",wd_path[index], event->name);
+						printf("ATTRIB:DIRECTORY:%s/:%s:%s\n",wd_path[index], event->name, actor);
 						fflush(stdout);
 					}
 
@@ -139,13 +145,24 @@ int main(int argc, char **argv)
 			else
 
 			{
+				char full_path[512];
+				snprintf(full_path, sizeof(full_path), "%s/%s", wd_path[index], event->name);
 				if (event->mask & IN_CREATE){printf("CREATED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
 				if (event->mask & IN_DELETE){printf("DELETED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_MODIFY){printf("MODIFIED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_MOVE){printf("MOVED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MODIFY)
+				{
+					trace(full_path, actor, sizeof(actor));
+					printf("MODIFIED:FILE:%s/:%s:%s\n",wd_path[index], event->name, actor); fflush(stdout);
+				}
+				if (event->mask & IN_MOVE)
+				{
+					trace(full_path, actor, sizeof(actor));
+					printf("MOVED:FILE:%s/:%s:%s\n",wd_path[index], event->name, actor); fflush(stdout);
+				}
 				if (event->mask & IN_ATTRIB){
 					if (!(event->mask & IN_CREATE)){
-						printf("ATTRIB:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);
+						trace(full_path, actor, sizeof(actor));
+						printf("ATTRIB:FILE:%s/:%s:%s\n",wd_path[index], event->name, actor); fflush(stdout);
 					}
 				}
 				// if ( event->mask & IN_CLOSE ) { printf("%s closed\n", event->name);}

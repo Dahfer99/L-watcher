@@ -20,7 +20,7 @@ last_created=""
 
 printf "${RED}%-25s %-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s${RESET}\n" "TIME" "EVENT" "TYPE" "PATH" "NAME" "PERMS" "OWNER" "GROUP" "ACTOR"
 
-while IFS=: read event type path name; do
+while IFS=: read event type path name user; do
     time=$(date "+[%a %d %b %H:%M:%S]")
 
     clean_path="${path#/}"
@@ -36,7 +36,7 @@ while IFS=: read event type path name; do
     else
         target="$path$name"
     fi
-    user=$(./scripts/trace.sh "$target")
+    #user=$(./scripts/trace.sh "$target")
     #echo "DEBUG output: $(whoami)" >&2
 
     
@@ -50,8 +50,8 @@ while IFS=: read event type path name; do
     if [[ "$event" == "CREATED" ]]; then
 
         last_created=$name
-        printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user"
-        printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$user" >> "$log_file"
+        printf "${GREEN}%-25s${RESET}%-15s %-15s %-30s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$owner"
+        printf "%-25s %-15s %-15s %-35s %-15s %-15s %-15s %-15s %-15s\n" "$time" "$event" "$type" "$path" "$name" "$perms" "$owner" "$group" "$owner" >> "$log_file"
 
     elif [[ "$event" == "MODIFIED" ]]; then
 
