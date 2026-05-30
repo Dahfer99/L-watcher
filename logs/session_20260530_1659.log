@@ -1,0 +1,6 @@
+[Sat 30 May 16:36:54]     MOVED_FROM      FILE            /home/unnamed/Public/new/           something                                                       
+[Sat 30 May 16:37:25]     MOVED_TO        FILE            /home/unnamed/Public/               something       644             unnamed         unnamed         
+[Sat 30 May 16:43:33]     MOVED_FROM      FILE            /home/unnamed/Public/               something       644             unnamed         unnamed         
+[Sat 30 May 16:43:33]     MOVED_TO        FILE            /home/unnamed/Public/new/           something       644             unnamed         unnamed         
+[Sat 30 May 16:44:26]     MOVED_FROM      FILE            /home/unnamed/Public/new/           something       644             unnamed         unnamed         
+[Sat 30 May 16:44:26]     MOVED_TO        FILE            /home/unnamed/Public/               something       644             unnamed         unnamed         

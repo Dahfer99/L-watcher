@@ -29,9 +29,9 @@ session_time=$(date +%Y%m%d_%H%M)
 max_days=7
 config_file="./config/inotify.config"
 
-if [ ! -f "./bin/inotify" ];then 
-    printf "${RED}Error:${REST} inotify absent"
-    exit 0 
+clear
+if [ ! -f "./bin/inotify" ];then
+    make &
 fi
 
 if [ ! -f "$config_file" ];then 

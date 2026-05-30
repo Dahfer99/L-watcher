@@ -1,7 +1,8 @@
 # Next step
-- Finding which user has done what...
-- Building a better TUI *optional*
+- Building a better TUI optional
+- Find another bug
 
 # must learn
 - getops
-- parsong ./config/inotify.config
+- parse on ./config/inotify.config
+- makefile
