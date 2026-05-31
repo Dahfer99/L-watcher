@@ -22,12 +22,14 @@ show_help(){
     echo "  -c CHEMIN   Ajouter un nouvel repertoire à surveiller puis lancer le programme"
     echo "  -C CHEMIN   Supprime la liste des repertoires à surveiller et ajouter un nouvel repertoire à surveiller puis lance le programme"
     echo "  -a          Ajoute un nouvel repertoire à surveiller (sans lancer le programme)"
+    echo "  -r ADMIN    Copie les archives de sauvegardes vers un autre pc (fonctionne avec sshd uniquement)"
     echo ""
     echo "Exemples:"
     echo "  ./start.sh"
     echo "  ./start.sh -d 14"
     echo "  ./start.sh -c /etc/lwatcher/custom.conf"
     echo "  ./start.sh -d 30 -c /etc/lwatcher/custom.conf"
+    echo "  ./start.sh -r user@192.169.1.2:/chemin/sauvegarde"
     echo ""
     exit 0
 }
@@ -58,11 +60,11 @@ if [ "$EUID" -ne 0 ];then
     printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
 fi 
 
-while getopts "hsDd:c:C:a:" opt; do
+while getopts "hsDd:c:C:a:r:" opt; do
     case $opt in
         h) show_help ;;
         s) show_path ;;
-        D) echo "" > "$config_file"
+        D) echo -n "" > "$config_file"
            exit 0
            ;;
         d) max_days=$OPTARG ;;
@@ -80,14 +82,15 @@ while getopts "hsDd:c:C:a:" opt; do
             if [[ -n "$new_path" ]];then
                 echo "$new_path" >> "$config_file"
             fi
-            ewit 0
+            exit 0
             ;;
+        r) remote_backup=$OPTARG;;
         ?) echo "Option inconnue, ./start -h pour afficher l'aide."; exit 1 ;;
     esac
 done
 
 
-trap "./scripts/cleanup.sh $session_time $max_days" EXIT
+trap "./scripts/cleanup.sh $session_time $max_days $remote_backup" EXIT
 
-./scripts/backup.sh $session_time
-./bin/inotify | ./scripts/output.sh $session_time
+./scripts/backup.sh "$session_time" "$remote_backup"
+./bin/inotify | ./scripts/output.sh "$session_time"

@@ -20,7 +20,7 @@ last_created=""
 
 printf "${RED}%-25s %-15s %-15s %-30s %-15s %-15s %-15s %-15s${RESET}\n" "TIME" "EVENT" "TYPE" "PATH" "NAME" "PERMS" "OWNER" "GROUP"
 
-while IFS=: read event type path name user; do
+while IFS=: read event type path name ; do
     time=$(date "+[%a %d %b %H:%M:%S]")
 
     clean_path="${path#/}"

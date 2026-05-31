@@ -28,10 +28,21 @@ while IFS= read -r line;do
         continue
     fi 
     cp -r "$line" "$backup_dir/"
-    printf "${BLUE}Watchin:${RESET} %s\n" "$line"
+    printf "${BLUE}Watching:${RESET} %s\n" "$line"
 done < "$config_path"
 
 tar -czf "./backup/$time_stamp.tar.gz" -C "./backup" "$time_stamp"
-if [ "$?" -ne 0 ]; then 
+if [ "$?" -ne 0 ]; then
     printf "${RED}Error:${RESET} La creation de l'archive de sauvegarde a echoue"
-fi 
+fi
+
+remote_backup=$2
+if [ -n "$remote_backup" ]; then
+    echo "Sending backup to $remote_backup..."
+    scp "./backup/$time_stamp.tar.gz" "$remote_backup"
+    if [ $? -eq 0 ]; then
+      echo "Sauvegarde à distance réussi"
+    else
+      echo "Sauvegarde à distance échoué"
+    fi
+fi

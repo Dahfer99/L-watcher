@@ -19,3 +19,14 @@ find "$log_dir" -name "session_*.log" -mtime "+$max_days" -delete
 find "$backup_dir" -name "*.tar.gz" -mtime "+$max_days" -delete
 find "$diff_dir" -name "*.diff" -mtime "+$max_days" -delete
 rm -rf "$child_backup_dir"
+
+remote_backup=$3
+if [ -n "$remote_backup" ]; then
+    echo "Sending backup to $remote_backup..."
+    scp -r "$log_dir" "$remote_backup"
+    if [ $? -eq 0 ]; then
+      echo ""
+    else
+      echo "copie du log échoué"
+    fi
+fi
