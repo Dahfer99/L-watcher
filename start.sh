@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Chemin
+
 show_path(){
   echo ""
   while IFS= read -r line;do
@@ -9,6 +12,8 @@ show_path(){
   echo ""
   exit 0
 }
+
+# HELP
 
 show_help(){
     echo ""
@@ -34,6 +39,8 @@ show_help(){
     exit 0
 }
 
+# Couleur
+
 RED="\033[31m"
 GREEN="\033[32m"
 YELLOW="\033[33m"
@@ -42,23 +49,29 @@ PURPLE="\033[35m"
 CYAN="\033[36m"
 RESET="\033[0m"
 
-session_time=$(date +%Y%m%d_%H%M)
-max_days=7
-config_file="./config/inotify.config"
 
 
+session_time=$(date +%Y%m%d_%H%M) # Synchronisation des dates
+max_days=7 # MAximum de jour par defaut
+config_file="./config/inotify.config" # Chemin du fichier de configuration
+
+
+# Verification du fichier binaire
 if [ ! -f "./bin/inotify" ];then
     make &
 fi
 
+# Verification du fichier de configuration
 if [ ! -f "$config_file" ];then 
     printf "${RED}Error:${RESET} ficher .config absent"
     exit 0
 fi
 
-if [ "$EUID" -ne 0 ];then 
-    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
-fi 
+#if [ "$EUID" -ne 0 ];then
+#    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
+#fi
+
+# Gestion des options
 
 while getopts "hsDd:c:C:a:r:" opt; do
     case $opt in
@@ -89,8 +102,8 @@ while getopts "hsDd:c:C:a:r:" opt; do
     esac
 done
 
-
+# Gestion des signals
 trap "./scripts/cleanup.sh $session_time $max_days $remote_backup" EXIT
-
+# Execution des autres scripts
 ./scripts/backup.sh "$session_time" "$remote_backup"
 ./bin/inotify | ./scripts/output.sh "$session_time"

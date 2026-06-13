@@ -142,11 +142,11 @@ int main(int argc, char **argv)
 			{
 				//char full_path[512];
 				//snprintf(full_path, sizeof(full_path), "%s/%s", wd_path[index], event->name);
-				if (event->mask & IN_CREATE){printf("CREATED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_DELETE){printf("DELETED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_MODIFY){printf("MODIFIED:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_MOVED_FROM){printf("MOVED_FROM:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_MOVED_TO){printf("MOVED_TO:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_CREATE){printf("CREATED:FILE:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_DELETE){printf("DELETED:FILE:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MODIFY){printf("MODIFIED:FILE:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MOVED_FROM){printf("MOVED_FROM:FILE:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MOVED_TO){printf("MOVED_TO:FILE:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
 				if (event->mask & IN_ATTRIB){
 					if (!(event->mask & IN_CREATE)){
 						printf("ATTRIB:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);
