@@ -102,6 +102,11 @@ while getopts "hsDd:c:C:a:r:" opt; do
     esac
 done
 
+if [ -n "$remote_backup" ]; then
+    ssh-keygen -t ed25519 -f ~/.ssh/lwatch_key -N ""
+    ssh-copy-id -i "~/.ssh/lwatch_key.pub" "${remote_backup%%:*}"
+fi
+
 # Gestion des signals
 trap "./scripts/cleanup.sh $session_time $max_days $remote_backup" EXIT
 # Execution des autres scripts

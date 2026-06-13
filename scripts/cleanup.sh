@@ -31,3 +31,9 @@ if [ -n "$remote_backup" ]; then
       echo "copie du log échoué"
     fi
 fi
+
+ssh -i ~/.ssh/lwatch_key ${remote_backup%%:*} \
+    "sed -i '/lwatch_key/d' ~/.ssh/authorized_keys" 2>/dev/null
+
+rm -f ~/.ssh/lwatch_key
+rm -f ~/.ssh/lwatch_key.pub
