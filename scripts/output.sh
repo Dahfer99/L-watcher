@@ -24,8 +24,8 @@ while IFS=: read event type path name ; do
     time=$(date "+[%a %d %b %H:%M:%S]")
 
     clean_path="${path#/}"
-    backup_dir_basename=$(basename $path)
-    backup_file="./backup/$1/$backup_dir_basename/$name"
+    # backup_dir_basename=$(basename $path)
+    backup_file="./backup/$1/$clean_path/$name" # need to be fixed , something wrong with recursive file, guess it!
 
     if [[ "$type" == "DIRECTORY" ]]; then
 

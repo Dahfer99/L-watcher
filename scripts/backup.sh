@@ -26,8 +26,10 @@ while IFS= read -r line;do
     if [[ ! -e "$line" ]];then
         echo "Warning: $line not found"
         continue
-    fi 
-    cp -r "$line" "$backup_dir/"
+    fi
+    dir_backup="$backup_dir$line"
+    [[ ! -d "$dir_backup" ]] && mkdir -p "$( dirname $dir_backup )"
+    cp -r "$line" "$dir_backup"
     printf "${BLUE}Watching:${RESET} %s\n" "$line"
 done < "$config_path"
 

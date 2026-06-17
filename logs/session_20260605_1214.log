@@ -1,6 +1,0 @@
-[Fri 05 Jun 12:13:39]     ATTRIB          DIRECTORY       /home/unnamed/Public/new//          exo             755             unnamed         unnamed        
-[Fri 05 Jun 12:13:39]     ATTRIB          DIRECTORY       /home/unnamed/Public/new//exo/      test            755             unnamed         unnamed        
-[Fri 05 Jun 12:13:55]     CREATED         FILE            /home/unnamed/Public/new//          file            644             unnamed         unnamed        
-[Fri 05 Jun 12:14:13]     DELETED         FILE            /home/unnamed/Public/new//          exemple         644             unnamed         unnamed         
-[Fri 05 Jun 12:14:13]     DELETED         DIRECTORY       /home/unnamed/Public/new//          exo             644             unnamed         unnamed         
-[Fri 05 Jun 12:14:13]     DELETED         FILE            /home/unnamed/Public/new//          file            644             unnamed         unnamed         

@@ -25,15 +25,14 @@ if [ -n "$remote_backup" ]; then
     echo "Sending backup to $remote_backup..."
     scp "$log_dir/session_$1.log" "$remote_backup"
     scp "$diff_dir/*_$1.diff" "$remote_backup"
-    if [ $? -eq 0 ]; then
+    if [ "$?" -eq 0 ]; then
       echo ""
     else
       echo "copie du log échoué"
     fi
-fi
 
-ssh -i ~/.ssh/lwatch_key ${remote_backup%%:*} \
+  ssh -i ~/.ssh/lwatch_key "${remote_backup%%:*}" \
     "sed -i '/lwatch_key/d' ~/.ssh/authorized_keys" 2>/dev/null
-
-rm -f ~/.ssh/lwatch_key
-rm -f ~/.ssh/lwatch_key.pub
+  rm -f ~/.ssh/lwatch_key
+  rm -f ~/.ssh/lwatch_key.pub
+fi

@@ -45,7 +45,7 @@ void watch_recursive(const char *path){
 	while ((entry=readdir(dirp)) != NULL){
 		if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
 		if ((entry->d_type) == DT_DIR){
-			snprintf(full_path, sizeof(full_path), "%s/%s", path, entry->d_name);
+			snprintf(full_path, sizeof(full_path), "%s%s/", path, entry->d_name);
 			watch_recursive(full_path);
 		}
 	}
