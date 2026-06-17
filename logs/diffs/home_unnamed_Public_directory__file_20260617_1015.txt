@@ -1,0 +1,4 @@
+[Wed 17 Jun 10:16:08]     /home/unnamed/Public/directory/     file            
+ 1a2
+> something
+

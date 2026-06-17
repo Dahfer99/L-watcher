@@ -25,7 +25,7 @@ while IFS=: read event type path name ; do
 
     clean_path="${path#/}"
     # backup_dir_basename=$(basename $path)
-    backup_file="./backup/$1/$clean_path/$name" # need to be fixed , something wrong with recursive file, guess it!
+    backup_file="./backup/$1/$clean_path/$name"
 
     if [[ "$type" == "DIRECTORY" ]]; then
 
@@ -54,7 +54,7 @@ while IFS=: read event type path name ; do
 
         dir_prefix="${clean_path//\//_}"
         diff_dir="./logs/diffs"
-        diff_name="${dir_prefix}_${name}_$1.diff"
+        diff_name="${dir_prefix}_${name}_$1.txt"
         diff_file="./logs/diffs/$diff_name"
 
         if [ ! -d "$diff_dir" ]; then

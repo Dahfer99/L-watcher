@@ -17,14 +17,14 @@ fi
 mv "$log_file" "./logs/session_$(date +%Y%m%d)_$(date +%H%M).log"
 find "$log_dir" -name "session_*.log" -mtime "+$max_days" -delete
 find "$backup_dir" -name "*.tar.gz" -mtime "+$max_days" -delete
-find "$diff_dir" -name "*.diff" -mtime "+$max_days" -delete
+find "$diff_dir" -name "*.txt" -mtime "+$max_days" -delete
 rm -rf "$child_backup_dir"
 
 remote_backup=$3
 if [ -n "$remote_backup" ]; then
     echo "Sending backup to $remote_backup..."
     scp "$log_dir/session_$1.log" "$remote_backup"
-    scp "$diff_dir/*_$1.diff" "$remote_backup"
+    scp "$diff_dir/*_$1.txt" "$remote_backup"
     if [ "$?" -eq 0 ]; then
       echo ""
     else
