@@ -1,6 +1,11 @@
 #!/bin/bash
+# max_days=${2:-7}
 
-max_days=${2:-7}
+if [ -z "$2" ];then
+  max_days=7
+else
+  max_days="$2"
+fi
 
 log_file="./logs/session.log"
 log_dir="./logs"
@@ -13,7 +18,6 @@ if [ ! -f "$log_file" ];then
     exit 0
 fi 
 
-#auditctl -D -k lwatcher 2>/dev/null
 mv "$log_file" "./logs/session_$(date +%Y%m%d)_$(date +%H%M).log"
 find "$log_dir" -name "session_*.log" -mtime "+$max_days" -delete
 find "$backup_dir" -name "*.tar.gz" -mtime "+$max_days" -delete
@@ -22,7 +26,6 @@ rm -rf "$child_backup_dir"
 
 remote_backup=$3
 if [ -n "$remote_backup" ]; then
-    echo "Sending backup to $remote_backup..."
     scp "$log_dir/session_$1.log" "$remote_backup"
     scp "$diff_dir/*_$1.txt" "$remote_backup"
     if [ "$?" -eq 0 ]; then

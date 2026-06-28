@@ -27,11 +27,9 @@ char wd_path[32][512];
 
 // function
 void watch_recursive(const char *path){
-
-	
 	wd[wd_count] = inotify_add_watch(fd, path, IN_ALL_EVENTS);
 	if (wd[wd_count] < 0) { perror(path); return; }
-	snprintf(wd_path[wd_count], 512, "%s", path);
+	snprintf(wd_path[wd_count], 256, "%s", path);
 	wd_count++;
 	
 	DIR * dirp = opendir(path);
