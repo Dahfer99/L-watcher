@@ -118,12 +118,12 @@ int main(int argc, char **argv)
 					snprintf(full_path, sizeof(full_path), "%s%s/", wd_path[index], event->name);
 					watch_recursive(full_path);
 				}
-				if (event->mask & IN_DELETE){printf("DELETED:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_MOVED_FROM){printf("MOVED_FROM:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
-				if (event->mask & IN_MOVED_TO){printf("MOVED_TO:DIRECTORY:%s/:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_DELETE){printf("DELETED:DIRECTORY:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MOVED_FROM){printf("MOVED_FROM:DIRECTORY:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
+				if (event->mask & IN_MOVED_TO){printf("MOVED_TO:DIRECTORY:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
 				if (event->mask & IN_ATTRIB ){
 					if (!(event->mask & IN_CREATE)){
-						printf("ATTRIB:DIRECTORY:%s/:%s\n",wd_path[index], event->name);
+						printf("ATTRIB:DIRECTORY:%s:%s\n",wd_path[index], event->name);
 						fflush(stdout);
 					}
 
