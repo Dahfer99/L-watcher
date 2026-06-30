@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 				if (event->mask & IN_MOVED_TO){printf("MOVED_TO:FILE:%s:%s\n",wd_path[index], event->name); fflush(stdout);}
 				if (event->mask & IN_ATTRIB){
 					if (!(event->mask & IN_CREATE)){
-						printf("ATTRIB:FILE:%s/:%s\n",wd_path[index], event->name); fflush(stdout);
+						printf("ATTRIB:FILE:%s:%s\n",wd_path[index], event->name); fflush(stdout);
 					}
 				}
 				// if ( event->mask & IN_CLOSE ) { printf("%s closed\n", event->name);}

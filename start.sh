@@ -71,6 +71,15 @@ fi
 #    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
 #fi
 
+log_dir="./logs"
+log_file="$log_dir/session.log"
+
+if [ ! -d "$log_dir" ]; then
+    mkdir $log_dir
+fi
+
+touch $log_file
+
 # Gestion des options
 
 while getopts "hsDd:c:C:a:r:" opt; do

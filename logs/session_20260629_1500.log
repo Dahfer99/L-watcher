@@ -1,0 +1,15 @@
+[Mon 29 Jun 14:56:47]     CREATED         FILE            /home/unnamed/Public/watch/         something       644             unnamed         unnamed        
+[Mon 29 Jun 14:56:57]     CREATED         DIRECTORY       /home/unnamed/Public/watch/         test            755             unnamed         unnamed        
+[Mon 29 Jun 14:57:14]     CREATED         FILE            /home/unnamed/Public/watch/test/    qkfsdjmlq       644             unnamed         unnamed        
+[Mon 29 Jun 14:57:39]     CREATED         FILE            /home/unnamed/Public/watch/test/     qkjfs         644             unnamed         unnamed        
+[Mon 29 Jun 14:57:39]     MODIFIED        FILE            /home/unnamed/Public/watch/test/     qkjfs         644             unnamed         unnamed        
+[Mon 29 Jun 14:57:52]     CREATED         FILE            /home/unnamed/Public/watch/test/    text            644             unnamed         unnamed        
+[Mon 29 Jun 14:57:52]     MODIFIED        FILE            /home/unnamed/Public/watch/test/    text            644             unnamed         unnamed        
+[Mon 29 Jun 14:58:05]     MODIFIED        FILE            /home/unnamed/Public/watch/test/    text            644             unnamed         unnamed        
+[Mon 29 Jun 14:58:51]     CREATED         FILE            /home/unnamed/Public/watch/         scripts.sh      644             unnamed         unnamed        
+[Mon 29 Jun 14:58:51]     MODIFIED        FILE            /home/unnamed/Public/watch/         scripts.sh      644             unnamed         unnamed        
+[Mon 29 Jun 14:58:51]     MODIFIED        FILE            /home/unnamed/Public/watch/         scripts.sh      644             unnamed         unnamed        
+[Mon 29 Jun 14:59:44]     ATTRIB          FILE            /home/unnamed/Public/watch//        scripts.sh      755             unnamed         unnamed        
+[Mon 29 Jun 14:59:54]     CREATED         FILE            /home/unnamed/Public/watch/         newfile         644             unnamed         unnamed        
+[Mon 29 Jun 14:59:54]     MODIFIED        FILE            /home/unnamed/Public/watch/         newfile         644             unnamed         unnamed        
+[Mon 29 Jun 14:59:54]     MODIFIED        FILE            /home/unnamed/Public/watch/         newfile         644             unnamed         unnamed        

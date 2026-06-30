@@ -11,11 +11,6 @@ RESET="\033[0m"
 log_dir="./logs"
 log_file="$log_dir/session.log"
 
-if [ ! -d "$log_dir" ]; then
-    mkdir $log_dir
-fi
-
-touch $log_file
 last_created=""
 
 printf "${RED}%-25s %-15s %-15s %-30s %-15s %-15s %-15s %-15s${RESET}\n" "TIME" "EVENT" "TYPE" "PATH" "NAME" "PERMS" "OWNER" "GROUP"
