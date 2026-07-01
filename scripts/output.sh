@@ -8,8 +8,13 @@ PURPLE="\033[35m"
 CYAN="\033[36m"
 RESET="\033[0m"
 
-log_dir="./logs"
+log_dir="/var/log/lwatcher"
 log_file="$log_dir/session.log"
+diff_dir="/var/log/lwatcher/diffs"
+
+if [ ! -d "$diff_dir" ]; then
+    mkdir -p $diff_dir
+fi
 
 last_created=""
 
@@ -20,16 +25,16 @@ while IFS=: read event type path name ; do
 
     clean_path="${path#/}"
     # backup_dir_basename=$(basename $path)
-    backup_file="./backup/$1/$clean_path/$name"
+    backup_file="$HOME/lwatcher/backup/$1/$clean_path/$name"
 
     if [[ "$type" == "DIRECTORY" ]]; then
 
         target="$path"
         dir_basename=$(basename "$path")
-        backup_file="./backup/$1/$dir_basename" # Actually it's directory but i'm too lazy to change the var's name
+        backup_file="$HOME/lwatcher/backup/$1/$dir_basename" # Actually it's directory but i'm too lazy to change the var's name
 
     else
-        target="$path$name"
+        target="$path/$name"
     fi
 
     if [[ "$event" != "DELETED" && "$event" != "MOVED_FROM" ]];then
@@ -37,7 +42,7 @@ while IFS=: read event type path name ; do
         perms=$(stat -c "%a" "$target")
         owner=$(stat -c "%U" "$target")
         group=$(stat -c "%G" "$target")
-    fi 
+    fi
 
     if [[ "$event" == "CREATED" ]]; then
 
@@ -48,13 +53,9 @@ while IFS=: read event type path name ; do
     elif [[ "$event" == "MODIFIED" ]]; then
 
         dir_prefix="${clean_path//\//_}"
-        diff_dir="./logs/diffs"
         diff_name="${dir_prefix}_${name}_$1.txt"
-        diff_file="./logs/diffs/$diff_name"
+        diff_file="$diff_dir/$diff_name"
 
-        if [ ! -d "$diff_dir" ]; then
-            mkdir -p $diff_dir
-        fi
 
         if [ -f "$backup_file" ]; then
             diff_output=$(diff "$backup_file" "/${clean_path}/${name}")

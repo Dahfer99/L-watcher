@@ -8,9 +8,9 @@ PURPLE="\033[35m"
 CYAN="\033[36m"
 RESET="\033[0m"
 
-config_path="./config/inotify.config"
+config_path="/etc/lwatcher/inotify.config"
 time_stamp=$1
-backup_dir="./backup/$time_stamp"
+backup_dir="$HOME/lwatcher/backup/$time_stamp"
 
 if [ ! -d "$backup_dir" ];then
     mkdir -p "$backup_dir"
@@ -33,7 +33,7 @@ while IFS= read -r line;do
     printf "${BLUE}Watching:${RESET} %s\n" "$line"
 done < "$config_path"
 
-tar -czf "./backup/$time_stamp.tar.gz" -C "./backup" "$time_stamp"
+tar -czf "$HOME/lwatcher/backup/$time_stamp.tar.gz" -C "$HOME/lwatcher/backup" "$time_stamp"
 if [ "$?" -ne 0 ]; then
     printf "${RED}Error:${RESET} La creation de l'archive de sauvegarde a echoue"
 fi
@@ -41,7 +41,7 @@ fi
 remote_backup=$2
 if [ -n "$remote_backup" ]; then
     echo "Sending backup to $remote_backup..."
-    scp "./backup/$time_stamp.tar.gz" "$remote_backup"
+    scp "$HOME/lwatcher/backup/$time_stamp.tar.gz" "$remote_backup"
     if [ $? -eq 0 ]; then
       echo "Sauvegarde à distance réussi"
     else

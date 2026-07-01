@@ -17,7 +17,7 @@ show_path(){
 
 show_help(){
     echo ""
-    echo "Usage: ./start.sh [OPTIONS] [CHEMIN]"
+    echo "Usage: lwatcher [OPTIONS] [CHEMIN]"
     echo ""
     echo "Options:"
     echo "  -h          Afficher cette manuel"
@@ -30,11 +30,11 @@ show_help(){
     echo "  -r ADMIN    Copie les archives de sauvegardes vers un autre pc (fonctionne avec sshd uniquement)"
     echo ""
     echo "Exemples:"
-    echo "  ./start.sh"
-    echo "  ./start.sh -d 14"
-    echo "  ./start.sh -c /etc/lwatcher/custom.conf"
-    echo "  ./start.sh -d 30 -c /etc/lwatcher/custom.conf"
-    echo "  ./start.sh -r user@192.169.1.2:/chemin/sauvegarde"
+    echo "  lwatcher"
+    echo "  lwatcher -d 14"
+    echo "  lwatcher -c /etc/lwatcher/inotify.conf"
+    echo "  lwatcher -d 30 -c /etc/lwatcher/inotify.conf"
+    echo "  lwatcher -r user@192.169.1.2:/chemin/sauvegarde"
     echo ""
     exit 0
 }
@@ -49,29 +49,43 @@ PURPLE="\033[35m"
 CYAN="\033[36m"
 RESET="\033[0m"
 
-
-
 session_time=$(date +%Y%m%d_%H%M) # Synchronisation des dates
 max_days=7 # MAximum de jour par defaut
-config_file="./config/inotify.config" # Chemin du fichier de configuration
+config_file="/etc/lwatcher/inotify.config" # Chemin du fichier de configuration
 
 
 # Verification du fichier binaire
-if [ ! -f "./bin/inotify" ];then
-    make &
+if [ ! -f "/opt/lwatcher/bin/inotify" ];then
+    echo "Fichier bin inotify absent"
+    exit 0
+fi
+
+if [ ! -f "/opt/lwatcher/scripts/cleanup.sh" ];then
+    echo "Fichier scripts cleanup.sh absent"
+    exit 0
+fi
+
+if [ ! -f "/opt/lwatcher/scripts/backup.sh" ];then
+    echo "Fichier scripts backup.sh absent"
+    exit 0
+fi
+
+if [ ! -f "/opt/lwatcher/scripts/output.sh" ];then
+    echo "Fichier scripts output.sh absent"
+    exit 0
 fi
 
 # Verification du fichier de configuration
 if [ ! -f "$config_file" ];then 
-    printf "${RED}Error:${RESET} ficher .config absent"
+    printf "${RED}Error:${RESET} ficher /etc/lwatcher/inotify.config absent"
     exit 0
 fi
 
-#if [ "$EUID" -ne 0 ];then
-#    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
-#fi
+if [ "$EUID" -ne 0 ];then
+    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
+fi
 
-log_dir="./logs"
+log_dir="/var/log/lwatcher"
 log_file="$log_dir/session.log"
 
 if [ ! -d "$log_dir" ]; then
@@ -107,7 +121,7 @@ while getopts "hsDd:c:C:a:r:" opt; do
             exit 0
             ;;
         r) remote_backup=$OPTARG;;
-        ?) echo "Option inconnue, ./start -h pour afficher l'aide."; exit 1 ;;
+        ?) echo "Option inconnue, lwatcher -h pour afficher l'aide."; exit 1 ;;
     esac
 done
 
@@ -117,9 +131,7 @@ if [ -n "$remote_backup" ]; then
 fi
 
 {
-# Gestion des signals
-trap "./scripts/cleanup.sh $session_time $max_days $remote_backup" EXIT
-# Execution des autres scripts
-./scripts/backup.sh "$session_time" "$remote_backup"
-./bin/inotify | ./scripts/output.sh "$session_time"
-} 2>> "./logs/error.log"
+trap "/opt/lwatcher/scripts/cleanup.sh $session_time $max_days $remote_backup" EXIT
+/opt/lwatcher/scripts/backup.sh "$session_time" "$remote_backup"
+/opt/lwatcher/bin/inotify | /opt/lwatcher/scripts/output.sh "$session_time"
+} 2>> "/var/log/lwatcher/error.log"

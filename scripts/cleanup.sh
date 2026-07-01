@@ -7,18 +7,18 @@ else
   max_days="$2"
 fi
 
-log_file="./logs/session.log"
-log_dir="./logs"
-backup_dir="./backup"
-diff_dir="./logs/diffs/"
-child_backup_dir="./backup/$1/"
+log_dir="/var/log/lwatcher"
+log_file="$log_dir/session.log"
+backup_dir="$HOME/lwatcher/backup"
+diff_dir="$log_dir/diffs/"
+child_backup_dir="$backup_dir/$1/"
 
 if [ ! -f "$log_file" ];then
     echo "Error: no current log file found"
     exit 0
 fi 
 
-mv "$log_file" "./logs/session_$(date +%Y%m%d)_$(date +%H%M).log"
+mv "$log_file" "$log_dir/session_$(date +%Y%m%d)_$(date +%H%M).log"
 find "$log_dir" -name "session_*.log" -mtime "+$max_days" -delete
 find "$backup_dir" -name "*.tar.gz" -mtime "+$max_days" -delete
 find "$diff_dir" -name "*.txt" -mtime "+$max_days" -delete

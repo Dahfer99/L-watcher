@@ -29,11 +29,11 @@ char wd_path[32][512];
 void watch_recursive(const char *path){
 	wd[wd_count] = inotify_add_watch(fd, path, IN_ALL_EVENTS);
 	if (wd[wd_count] < 0) { perror(path); return; }
-	snprintf(wd_path[wd_count], 256, "%s", path);
+	snprintf(wd_path[wd_count], 512, "%s", path);
 	wd_count++;
 	
 	DIR * dirp = opendir(path);
-	char full_path[512];
+	char full_path[1024];
 	if (dirp == NULL){
 		perror("dirp");
 		return;
@@ -54,7 +54,6 @@ void cleanup(int sig){
 		inotify_rm_watch(fd, wd[i]);
 	}
 	close(fd);
-	printf("\nClosing...\n");
 	exit(0);
 }
 
@@ -76,15 +75,15 @@ int main(int argc, char **argv)
 		perror("inotify_init");
 		return -1;
 	}
-	
-	conf = fopen("./config/inotify.config", "r");
+
+	conf = fopen("/etc/lwatcher/inotify.config", "r");
 	if (conf == NULL)
 	{
 		perror("config file");
 		exit(0);
 	}
-	
-	
+
+
 	while ((fgets(path, sizeof(path), conf)) != NULL)
 	{
 		if (path[0] == '#' || path[0] == '\0'){continue;}
