@@ -86,8 +86,13 @@ int main(int argc, char **argv)
 
 	while ((fgets(path, sizeof(path), conf)) != NULL)
 	{
-		if (path[0] == '#' || path[0] == '\0'){continue;}
+		if (path[0] == '#' || path[0] == '\0') continue;
 		path[strcspn(path, "\n")] = '\0';
+		size_t len = strlen(path);
+		if (len > 0 && path[len-1] != '/' && len < sizeof(path) - 1) {
+			path[len] = '/';
+			path[len+1] = '\0';
+		}
 		watch_recursive(path);
 	}
 
@@ -105,6 +110,12 @@ int main(int argc, char **argv)
 					index = i;
 					break;
 				}
+			}
+
+			if (index == -1)
+			{
+				ptr += EVENT_SIZE + event->len;
+				continue;
 			}
 
 
