@@ -57,32 +57,33 @@ config_file="/etc/lwatcher/inotify.config" # Chemin du fichier de configuration
 # Verification du fichier binaire
 if [ ! -f "/opt/lwatcher/bin/inotify" ];then
     echo "Fichier bin inotify absent"
-    exit 0
+    exit 2
 fi
 
 if [ ! -f "/opt/lwatcher/scripts/cleanup.sh" ];then
     echo "Fichier scripts cleanup.sh absent"
-    exit 0
+    exit 2
 fi
 
 if [ ! -f "/opt/lwatcher/scripts/backup.sh" ];then
     echo "Fichier scripts backup.sh absent"
-    exit 0
+    exit 2
 fi
 
 if [ ! -f "/opt/lwatcher/scripts/output.sh" ];then
     echo "Fichier scripts output.sh absent"
-    exit 0
+    exit 2
 fi
 
 # Verification du fichier de configuration
 if [ ! -f "$config_file" ];then 
     printf "${RED}Error:${RESET} ficher /etc/lwatcher/inotify.config absent"
-    exit 0
+    exit 2
 fi
 
 if [ "$EUID" -ne 0 ];then
     printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
+    exit 5
 fi
 
 log_dir="/var/log/lwatcher"
