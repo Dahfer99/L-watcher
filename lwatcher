@@ -53,6 +53,10 @@ session_time=$(date +%Y%m%d_%H%M) # Synchronisation des dates
 max_days=7 # MAximum de jour par defaut
 config_file="/etc/lwatcher/inotify.config" # Chemin du fichier de configuration
 
+if [ "$EUID" -ne 0 ];then
+    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
+    exit 5
+fi
 
 # Verification du fichier binaire
 if [ ! -f "/opt/lwatcher/bin/inotify" ];then
@@ -76,15 +80,11 @@ if [ ! -f "/opt/lwatcher/scripts/output.sh" ];then
 fi
 
 # Verification du fichier de configuration
-if [ ! -f "$config_file" ];then 
+if [ ! -f "$config_file" ];then
     printf "${RED}Error:${RESET} ficher /etc/lwatcher/inotify.config absent"
     exit 2
 fi
 
-if [ "$EUID" -ne 0 ];then
-    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
-    exit 5
-fi
 
 log_dir="/var/log/lwatcher"
 log_file="$log_dir/session.log"

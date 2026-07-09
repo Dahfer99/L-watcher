@@ -2,7 +2,7 @@ all:
 	gcc ./src/inotify.c -o ./bin/inotify
 
 install:
-	mkdir ~/lwatcher
+	mkdir -p ~/lwatcher
 	mkdir -p /opt/lwatcher
 	mkdir -p /var/log/lwatcher
 	mkdir -p /etc/lwatcher && touch /etc/lwatcher/inotify.config
