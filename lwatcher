@@ -85,10 +85,6 @@ if [ ! -f "$config_file" ];then
     exit 2
 fi
 
-if [ ! -s "$config_file" ];then
-  printf "${RED}Error:${RESET} Fichier de configuration vide"
-  exit 2
-fi
 
 log_dir="/var/log/lwatcher"
 log_file="$log_dir/session.log"
@@ -133,6 +129,11 @@ done
 if [ -n "$remote_backup" ]; then
     ssh-keygen -t ed25519 -f ~/.ssh/lwatch_key -N ""
     ssh-copy-id -i ~/.ssh/lwatch_key.pub "${remote_backup%%:*}"
+fi
+
+if [ ! -s "$config_file" ];then
+  printf "${RED}Error:${RESET} Fichier de configuration vide"
+  exit 2
 fi
 
 {
