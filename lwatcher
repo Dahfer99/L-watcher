@@ -85,6 +85,10 @@ if [ ! -f "$config_file" ];then
     exit 2
 fi
 
+if [ ! -s "$config_file" ];then
+  printf "${RED}Error:${RESET} Fichier de configuration vide"
+  exit 2
+fi
 
 log_dir="/var/log/lwatcher"
 log_file="$log_dir/session.log"

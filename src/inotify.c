@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 			if (event->mask & IN_ISDIR)
 			{
 				if (event->mask & IN_CREATE){
-					char full_path[512];
+					char full_path[513];
 					printf("CREATED:DIRECTORY:%s:%s\n",wd_path[index], event->name);
 					fflush(stdout);
 					snprintf(full_path, sizeof(full_path), "%s%s/", wd_path[index], event->name);
