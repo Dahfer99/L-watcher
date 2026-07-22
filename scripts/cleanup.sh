@@ -32,9 +32,9 @@ shopt -u nullglob
 
 remote_backup=$3
 if [ -n "$remote_backup" ]; then
-    scp "$log_dir/session_$timestamp.log" "$remote_backup"
+    scp -i "$HOME/.ssh/lwatch_key" "$log_dir/session_$timestamp.log" "$remote_backup"
     if [ ${#matches[@]} -gt 0 ]; then
-      scp "${matches[@]}" "$remote_backup"
+      scp -i "$HOME/.ssh/lwatch_key" "${matches[@]}" "$remote_backup"
     fi
 
     if [ "$?" -eq 0 ]; then

@@ -14,9 +14,9 @@ backup_dir="$HOME/lwatcher/backup/$time_stamp"
 
 if [ ! -d "$backup_dir" ];then
     mkdir -p "$backup_dir"
-    if [ "$?" -ne 0 ]; then 
+    if [ "$?" -ne 0 ]; then
         printf "${RED}Error:${RESET} Impossible de creer le repertoire de sauvegarde"
-    fi 
+    fi
 fi
 
 while IFS= read -r line;do
@@ -33,18 +33,25 @@ while IFS= read -r line;do
     printf "${BLUE}Watching:${RESET} %s\n" "$line"
 done < "$config_path"
 
-tar -czf "$HOME/lwatcher/backup/$time_stamp.tar.gz" -C "$HOME/lwatcher/backup" "$time_stamp"
-if [ "$?" -ne 0 ]; then
-    printf "${RED}Error:${RESET} La creation de l'archive de sauvegarde a echoue"
-fi
+skip_backup=$3
 
-remote_backup=$2
-if [ -n "$remote_backup" ]; then
-    echo "Sending backup to $remote_backup..."
-    scp "$HOME/lwatcher/backup/$time_stamp.tar.gz" "$remote_backup"
-    if [ $? -eq 0 ]; then
-      echo "Sauvegarde à distance réussi"
-    else
-      echo "Sauvegarde à distance échoué"
+if [ "$skip_backup" != "1" ]; then
+
+    tar -czf "$HOME/lwatcher/backup/$time_stamp.tar.gz" -C "$HOME/lwatcher/backup" "$time_stamp"
+    if [ "$?" -ne 0 ]; then
+        printf "${RED}Error:${RESET} La creation de l'archive de sauvegarde a echoue"
     fi
+
+    remote_backup=$2
+    if [ -n "$remote_backup" ]; then
+        echo "Sending backup to $remote_backup..."
+        scp -i "$HOME/.ssh/lwatch_key" "$HOME/lwatcher/backup/$time_stamp.tar.gz" "$remote_backup"
+        if [ $? -eq 0 ]; then
+          echo "Sauvegarde à distance réussi"
+        else
+          echo "Sauvegarde à distance échoué"
+        fi
+    fi
+else
+
 fi
