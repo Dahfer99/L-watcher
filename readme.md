@@ -26,5 +26,5 @@ make remove
 make purge
 ```
 
-# [Documentation](dahfer99.github.io/Lwatcher-Documentation)
-
+# Documentation 
+- https://dahfer99.github.io/Lwatcher-Documentation
