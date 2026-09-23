@@ -28,23 +28,3 @@ rm -rf "$child_backup_dir"
 shopt -s nullglob
 matches=("$diff_dir"/*"$timestamp".txt)
 shopt -u nullglob
-
-
-remote_backup=$3
-if [ -n "$remote_backup" ]; then
-    scp -i "$HOME/.ssh/lwatch_key" "$log_dir/session_$timestamp.log" "$remote_backup"
-    if [ ${#matches[@]} -gt 0 ]; then
-      scp -i "$HOME/.ssh/lwatch_key" "${matches[@]}" "$remote_backup"
-    fi
-
-    if [ "$?" -eq 0 ]; then
-      echo "copie du log réussi"
-    else
-      echo "copie du log échoué"
-    fi
-
-  ssh -i ~/.ssh/lwatch_key "${remote_backup%%:*}" \
-    "sed -i '/lwatch_key/d' ~/.ssh/authorized_keys" 2>/dev/null
-  rm -f ~/.ssh/lwatch_key
-  rm -f ~/.ssh/lwatch_key.pub
-fi

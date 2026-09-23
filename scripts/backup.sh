@@ -41,14 +41,4 @@ else
   if [ "$?" -ne 0 ]; then
       printf "${RED}Error:${RESET} La creation de l'archive de sauvegarde a echoue"
   fi
-  remote_backup=$2
-  if [ -n "$remote_backup" ]; then
-      echo "Sending backup to $remote_backup..."
-      scp -i "$HOME/.ssh/lwatch_key" "$HOME/lwatcher/backup/$time_stamp.tar.gz" "$remote_backup"
-      if [ $? -eq 0 ]; then
-        echo "Sauvegarde à distance réussi"
-      else
-        echo "Sauvegarde à distance échoué"
-      fi
-  fi
 fi

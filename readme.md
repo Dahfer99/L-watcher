@@ -26,5 +26,3 @@ make remove
 make purge
 ```
 
-# Documentation 
-- https://dahfer99.github.io/Lwatcher-Documentation
