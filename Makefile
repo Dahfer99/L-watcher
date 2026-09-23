@@ -8,9 +8,10 @@ install:
 	mkdir -p /etc/lwatcher && touch /etc/lwatcher/inotify.config
 	cp -r ./scripts /opt/lwatcher/ && cp -r ./bin /opt/lwatcher
 	cp lwatcher /opt/lwatcher/
-	chmod 755 /usr/local/bin/lwatcher
-	chmod -R 755 /opt/lwatcher/*
 	ln -s /opt/lwatcher/lwatcher /usr/local/bin/lwatcher
+	chmod 755 /usr/local/bin/lwatcher
+	chmod -R 755 /opt/lwatcher/scripts/*
+	cp Makefile /opt/lwatcher/
 
 remove:
 	rm -rf /opt/lwatcher
