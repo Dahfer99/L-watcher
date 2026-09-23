@@ -1,28 +1,27 @@
 # Lwatcher
 
-L-Watcher est un outil FIM conçu pour Linux. Il surveille en temps réel un ou plusieurs répertoires configurés par l'utilisateur, détecte chaque événement survenu sur le système de fichiers comme création, modification, suppression, déplacement, changement de permissions d'un fichier et en produit une trace structurée et lisible.
+L-Watcher is a FIM tool designed for Linux. It monitors in real time one or more user-configured directories, detects every event that occurs on the file system such as creation, modification, deletion, moving, or permission changes of a file, and produces a structured and readable trace.
 
 # Installation
 
 ```bash
-# Compiler le code source
+# Compile the source code
 make
 
-# Installer automatiquement
+# Install automatically
 sudo make install
 
-# Verifier l'installation
+# Verify the installation
 which lwatcher
 ```
 
->**Note :** Il faut se connecter en tant que `root` pour utiliser lwatcher
+>**Note:** You must be logged in as `root` to use lwatcher
 
-# Desinstallation
+# Uninstallation
 ```bash
-# seulemnt desinstaller mais garde les fichiers de sauvegarde et log
+# only uninstall but keep the backup and log files
 make remove
 
-# supprimer tous les fichiers en relation avec lwatcher
+# delete all files related to lwatcher
 make purge
 ```
-

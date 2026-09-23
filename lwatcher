@@ -17,19 +17,19 @@ show_path(){
 
 show_help(){
     echo ""
-    echo "Usage: lwatcher [OPTIONS] [CHEMIN]"
+    echo "Usage: lwatcher [OPTIONS] [PATH]"
     echo ""
     echo "Options:"
-    echo "  -h          Afficher cette manuel"
-    echo "  -s          Afficher les repertoires surveillés"
-    echo "  -D          Supprime la liste des repertoires à surveiller"
-    echo "  -d n        Définir le nombre de jour maximum pour stocker les sauvegardes (par defaut: 7)"
-    echo "  -c CHEMIN   Ajouter un nouvel repertoire à surveiller puis lancer le programme"
-    echo "  -C CHEMIN   Supprime la liste des repertoires à surveiller et ajouter un nouvel repertoire à surveiller puis lance le programme"
-    echo "  -a          Ajoute un nouvel repertoire à surveiller (sans lancer le programme)"
-    echo "  -n          Ignore la creation de l'archive de sauvegarde (les fichiers temporaires necessaires aux differences sont quand meme crees puis supprimes en fin de session)"
+    echo "  -h          Display this manual"
+    echo "  -s          Display the monitored directories"
+    echo "  -D          Delete the list of directories to monitor"
+    echo "  -d n        Set the maximum number of days to store backups (default: 7)"
+    echo "  -c PATH     Add a new directory to monitor and then run the program"
+    echo "  -C PATH     Delete the list of directories to monitor and add a new directory to monitor, then run the program"
+    echo "  -a          Add a new directory to monitor (without running the program)"
+    echo "  -n          Skip creating the backup archive (temporary files needed for diffs are still created and then deleted at the end of the session)"
     echo ""
-    echo "Exemples:"
+    echo "Examples:"
     echo "  lwatcher"
     echo "  lwatcher -d 14"
     echo "  lwatcher -c /etc/lwatcher/inotify.conf"
@@ -37,8 +37,6 @@ show_help(){
     echo ""
     exit 0
 }
-
-# Couleur
 
 RED="\033[31m"
 GREEN="\033[32m"
@@ -48,40 +46,25 @@ PURPLE="\033[35m"
 CYAN="\033[36m"
 RESET="\033[0m"
 
-session_time=$(date +%Y%m%d_%H%M) # Synchronisation des dates
-max_days=7 # MAximum de jour par defaut
-config_file="/etc/lwatcher/inotify.config" # Chemin du fichier de configuration
+session_time=$(date +%Y%m%d_%H%M)
+max_days=7
+config_file="/etc/lwatcher/inotify.config"
 skip_backup=0
 
 if [ "$EUID" -ne 0 ];then
-    printf "${YELLOW}Warning:${RESET} Le script n'est pas executer en tant que root"
+    printf "${YELLOW}Warning:${RESET} L-watcher must be executed as root"
     exit 5
 fi
 
-# Verification du fichier binaire
-if [ ! -f "/opt/lwatcher/bin/inotify" ];then
-    echo "Fichier bin inotify absent"
+if [ ! -f "/opt/lwatcher/bin/inotify" ] || [ ! -f "/opt/lwatcher/scripts/cleanup.sh" ] || [ ! -f "/opt/lwatcher/scripts/backup.sh" ] ||[ ! -f "/opt/lwatcher/scripts/output.sh" ];then
+    echo -e "${RED}Error:${RED} Executable File missing"
     exit 2
 fi
 
-if [ ! -f "/opt/lwatcher/scripts/cleanup.sh" ];then
-    echo "Fichier scripts cleanup.sh absent"
-    exit 2
-fi
 
-if [ ! -f "/opt/lwatcher/scripts/backup.sh" ];then
-    echo "Fichier scripts backup.sh absent"
-    exit 2
-fi
 
-if [ ! -f "/opt/lwatcher/scripts/output.sh" ];then
-    echo "Fichier scripts output.sh absent"
-    exit 2
-fi
-
-# Verification du fichier de configuration
 if [ ! -f "$config_file" ];then
-    printf "${RED}Error:${RESET} ficher /etc/lwatcher/inotify.config absent"
+    printf "${RED}Error:${RESET} file /etc/lwatcher/inotify.config missing"
     exit 2
 fi
 
@@ -94,8 +77,6 @@ if [ ! -d "$log_dir" ]; then
 fi
 
 touch $log_file
-
-# Gestion des options
 
 while getopts "hsDd:c:C:a:r:n" opt; do
     case $opt in
@@ -122,14 +103,9 @@ while getopts "hsDd:c:C:a:r:n" opt; do
             exit 0
             ;;
         n) skip_backup=1 ;;
-        ?) echo "Option inconnue, lwatcher -h pour afficher l'aide."; exit 1 ;;
+        ?) echo "Unknown option"; exit 1 ;;
     esac
 done
-
-if [ -n "$remote_backup" ]; then
-    ssh-keygen -t ed25519 -f ~/.ssh/lwatch_key -N ""
-    ssh-copy-id -i ~/.ssh/lwatch_key.pub "${remote_backup%%:*}"
-fi
 
 if [ ! -s "$config_file" ];then
   printf "${RED}Error:${RESET} Fichier de configuration vide"

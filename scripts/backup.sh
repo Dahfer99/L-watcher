@@ -16,7 +16,7 @@ backup_dir="$HOME/lwatcher/backup/$time_stamp"
 if [ ! -d "$backup_dir" ];then
     mkdir -p "$backup_dir"
     if [ "$?" -ne 0 ]; then
-        printf "${RED}Error:${RESET} Impossible de creer le repertoire de sauvegarde"
+        printf "${RED}Error:${RESET} Fail creating backup directory"
     fi
 fi
 
@@ -35,10 +35,10 @@ while IFS= read -r line;do
 done < "$config_path"
 
 if [ "$skip_backup" -eq 1 ]; then
-  echo "Sauvegarde ignoré"
+  echo "[NO BACKUP]"
 else
   tar -czf "$HOME/lwatcher/backup/$time_stamp.tar.gz" -C "$HOME/lwatcher/backup" "$time_stamp"
   if [ "$?" -ne 0 ]; then
-      printf "${RED}Error:${RESET} La creation de l'archive de sauvegarde a echoue"
+      printf "${RED}Error:${RESET} Archive creation failed"
   fi
 fi
